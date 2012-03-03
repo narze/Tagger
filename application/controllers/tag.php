@@ -42,6 +42,13 @@ class Tag extends CI_Controller {
 	}
 
 	function execute(){
+		//Remove old upload image if exists
+		$user = $this->user;
+		if(isset($user['tag_image'])){
+			$image_path = FCPATH.'uploads/'.$user['tag_image'].'.png';
+			unlink($image_path);
+		}
+
 		$this->load->model('setting_model');
 		$setting = $this->setting_model->getOne(array('app_install_id' => $this->app_install_id));
 		if(!$setting) {
