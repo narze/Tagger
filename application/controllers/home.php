@@ -5,6 +5,7 @@ class Home extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->library('fb');
+		$this->load->model('setting_model');
 		$segments = $this->uri->segment_array();
 		$this->app_install_id = end($segments);
 		if(!is_numeric($this->app_install_id)){
@@ -19,13 +20,15 @@ class Home extends CI_Controller {
 				}
 				$facebook_page_id = $signed_request['page']['id'];
 			}
-			$this->load->model('setting_model');
 			if($setting = $this->setting_model->getOne(array('facebook_page_id' => $facebook_page_id))){
 				redirect($setting['app_install_id']);
 			} else {
 				exit('App not installed yet');
 			}
 		} else {
+			if(!$setting = $this->setting_model->getOne(array('app_install_id' => $this->app_install_id))){
+				exit('App not installed yet');
+			}
 			$this->load->vars('app_install_id', $this->app_install_id);
 		}
 	}
