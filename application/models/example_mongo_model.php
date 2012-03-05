@@ -25,7 +25,7 @@ class Example_mongo_model extends CI_Model {
 	
 	function get($query){
 		$result = $this->collection->find($query);
-		return obj2array($result);
+		return cursor2array($result);
 	}
 
 	function getOne($query){

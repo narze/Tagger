@@ -45,3 +45,17 @@ if(!function_exists('obj2array'))
 		return json_decode(json_encode($object), TRUE);
 	}
 }
+
+if(!function_exists('cursor2array'))
+{
+	function cursor2array($cursor){
+		if(!$cursor){
+			return FALSE;
+		}
+		$array = array();
+		foreach($cursor as $one){
+			$array[] = $one;
+		}
+		return $array;
+	}
+}
