@@ -16,7 +16,8 @@ class Setting_model extends CI_Model {
 	function add($data)
 	{
 		try	{
-			return $this->collection->insert($data, array('safe' => TRUE));
+			$this->collection->insert($data, array('safe' => TRUE));
+			return ''.$data['_id'];
 		} catch(MongoCursorException $e){
 			log_message('error', 'Mongodb error : '. $e);
 			return FALSE;
