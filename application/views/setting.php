@@ -57,7 +57,7 @@ echo form_open('setting/'.$app_install_id, $attributes); ?>
 <p>
         <label for="facebook_page_id">Facebook page id*</label>
         <?php echo form_error('facebook_page_id'); ?>
-        <br /><input id="facebook_page_id" type="text" name="facebook_page_id"  value="<?php echo set_value('facebook_page_id', isset($setting['facebook_page_id']) ? ($setting['facebook_page_id']) : ''); ?>"  />
+        <br /><input id="facebook_page_id" type="text" name="facebook_page_id"  value="<?php echo set_value('facebook_page_id', isset($facebook_page_id) ? ($facebook_page_id) : ''); ?>"  />
 </p>
 
 

@@ -11,18 +11,18 @@ class SocialHappen {
 	private $app_secret_key;
 	
 	function __construct(){
-		$CI =& get_instance();
-		$CI->load->config('socialhappen');
-		$this->sh_api_url = $CI->config->item('api_url');
-		$this->app_id = $CI->config->item('app_id');
-		$this->app_secret_key = $CI->config->item('app_secret_key');
-		$this->mockuphappen_enable = $CI->config->item('mockuphappen_enable');
+		$this->CI =& get_instance();
+		$this->CI->load->config('socialhappen');
+		$this->sh_api_url = $this->CI->config->item('api_url');
+		$this->app_id = $this->CI->config->item('app_id');
+		$this->app_secret_key = $this->CI->config->item('app_secret_key');
+		$this->mockuphappen_enable = $this->CI->config->item('mockuphappen_enable');
 	}
 	
 	function request($method = null, $args = array()){
-		if($this->mockuphappen_enable) {
-			$CI->load->config('mockuphappen');
-			return $CI->config->item("mockuphappen_{$method}");
+		if($this->CI->config->item('mockuphappen_enable')) {
+			$this->CI->load->config('mockuphappen');
+			return $this->CI->config->item("mockuphappen_{$method}");
 		} else {
 			if($method == null && sizeof($args)){
 			return array(
@@ -83,5 +83,49 @@ class SocialHappen {
 	function bad_response($response) {
 		if(isset($response['status']) && $response['status'] == 'OK') return FALSE;
 		else return TRUE;
+	}
+
+	function get_app_install_id($force_app_installed = TRUE) {
+		$segments = $this->CI->uri->segment_array();
+		foreach($segments as $segment) {
+			if(is_numeric($segment)){
+				$segment = (int) $segment;
+				$this->CI->load->vars('app_install_id', $segment);
+				$this->app_install_id = $segment;
+				break;
+			}
+		}
+		if(!isset($this->app_install_id)) {
+			$this->CI->load->vars('app_install_id', FALSE);
+			$this->app_install_id = FALSE; //Not found any numeric segment
+		}
+
+		//Try redirect if found app_install_id in mockuphappen config or setting model
+		if(!$this->app_install_id) {
+			if($this->CI->config->item('mockuphappen_enable')){
+				$facebook_page_id = $this->CI->config->item('mockuphappen_facebook_page_id');
+			} else if ($signed_request = $this->CI->facebook->getSignedRequest()) {
+				//Get from signed_request in facebook page
+				if(!isset($signed_request['page']['id'])){
+					exit('Not in page tab');
+				}
+				$facebook_page_id = $signed_request['page']['id'];
+			} else {
+				exit('Cannot get facebook signed request');
+			}
+			if($setting = $this->CI->setting_model->getOne(array('facebook_page_id' => $facebook_page_id))){
+				redirect($this->CI->uri->uri_string().'/'.$setting['app_install_id']);
+			} else {
+				if($force_app_installed) {
+					exit('App not installed yet');
+				}
+			}
+		} else {
+			if(!$setting = $this->CI->setting_model->getOne(array('app_install_id' => $this->app_install_id))){
+				if($force_app_installed) {
+					exit('App not installed yet');
+				}
+			}
+		}
 	}
 }

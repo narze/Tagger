@@ -70,6 +70,7 @@ $route['home/(:num)'] = "home/index/$1";
 $route['register/(:num)'] = "register/index/$1";
 $route['setting/(:num)'] = "setting/index/$1";
 $route['tag/(:num)'] = "tag/index/$1";
+$route['(:any)/(:num)'] = "$1/index/$2"; // default index routes
 $route['404_override'] = '';
 
 

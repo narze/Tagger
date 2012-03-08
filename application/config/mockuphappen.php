@@ -2,9 +2,9 @@
 $config['mockuphappen_request_array'] = array('status' => 'OK', 'success' => TRUE);
 $config['mockuphappen_request_install_app'] = array('status' => 'OK', 'success' => TRUE);
 $config['mockuphappen_request_install_page'] = array('status' => 'OK', 'success' => TRUE);
-$config['mockuphappen_request_user_id'] = array('status' => 'OK', 'success' => TRUE);
-$config['mockuphappen_request_user_facebook_id'] = array('status' => 'OK', 'success' => TRUE);
-$config['mockuphappen_request_facebook_page_id'] = array('status' => 'OK', 'success' => TRUE);
+$config['mockuphappen_request_user_id'] = array('status' => 'OK', 'success' => TRUE, 'user_id' => TRUE);
+$config['mockuphappen_request_user_facebook_id'] = array('status' => 'OK', 'success' => TRUE, 'user_facebook_id' => TRUE);
+$config['mockuphappen_request_facebook_page_id'] = array('status' => 'OK', 'success' => TRUE, 'facebook_page_id' => TRUE);
 $config['mockuphappen_request_page_id'] = array('status' => 'OK', 'success' => TRUE);
 $config['mockuphappen_request_log_user'] = array('status' => 'OK', 'success' => TRUE);
 $config['mockuphappen_request_authenticate'] = array('status' => 'OK', 'success' => TRUE);
@@ -32,3 +32,5 @@ $config['mockuphappen_request_page_role'] = array('status' => 'OK', 'success' =>
 $config['mockuphappen_request_campaign_list'] = array('status' => 'OK', 'success' => TRUE);
 
 $config['mockuphappen_facebook_page_id'] = '135287989899131';
+$config['mockuphappen_app_install_id'] = '1';
+$config['mockuphappen_app_install_secret_key'] = '8f8484e68029ea81d694dadf52e4228f';

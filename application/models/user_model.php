@@ -5,6 +5,7 @@ class User_model extends CI_Model {
 	function __construct() {
 		$this->load->helper('mongodb_helper');
 		$this->collection = mongodb_load('user');
+		$this->int_values = array();
 	}
 
 	//Basic functions (reindex & CRUD)
@@ -15,8 +16,9 @@ class User_model extends CI_Model {
         
 	function add($data)
 	{
+		$data = array_cast_int($data, $this->int_values);
 		try	{
-			$this->collection->insert($data, array('safe' => TRUE));
+			$result = $this->collection->insert($data, array('safe' => TRUE));
 			return ''.$data['_id'];
 		} catch(MongoCursorException $e){
 			log_message('error', 'Mongodb error : '. $e);
@@ -25,17 +27,21 @@ class User_model extends CI_Model {
 	}
 	
 	function get($query){
+		$query = array_cast_int($query, $this->int_values);
 		$result = $this->collection->find($query);
 		return cursor2array($result);
 	}
 
 	function getOne($query){
+		$query = array_cast_int($query, $this->int_values);
 		$result = $this->collection->findOne($query);
 		return obj2array($result);
 	}
 		
 	function update($query, $data)
 	{
+		$query = array_cast_int($query, $this->int_values);
+		$data = array_cast_int($data, $this->int_values);
 		try	{
 			return $this->collection->update($query, $data, array('safe' => TRUE));
 		} catch(MongoCursorException $e){
@@ -45,6 +51,7 @@ class User_model extends CI_Model {
 	}
 
 	function delete($query){
+		$query = array_cast_int($query, $this->int_values);
 		return $this->collection->remove($query, array('$atomic' => TRUE));
 	}
 	//End of basic functions

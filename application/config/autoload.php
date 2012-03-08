@@ -78,7 +78,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array();
+$autoload['libraries'] = array('socialhappen', 'fb');
 
 
 /*
@@ -106,7 +106,7 @@ $autoload['helper'] = array('url');
 |
 */
 
-$autoload['config'] = array('socialhappen');
+$autoload['config'] = array('socialhappen', 'mockuphappen');
 
 
 /*
@@ -135,7 +135,7 @@ $autoload['language'] = array();
 |
 */
 
-$autoload['model'] = array();
+$autoload['model'] = array('setting_model');
 
 
 /* End of file autoload.php */

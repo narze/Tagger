@@ -59,3 +59,27 @@ if(!function_exists('cursor2array'))
 		return $array;
 	}
 }
+
+if(!function_exists('array_cast_int'))
+{
+	function array_cast_int($array, $indexes = NULL) {
+		if(!is_array($array)) {
+			return FALSE;
+		}
+		if(is_array($indexes)) {
+			foreach($indexes as $index) {
+				if(isset($array[$index]) && is_numeric($array[$index])) {
+					$array[$index] = (int) $array[$index];
+				}
+			}
+		} else {
+			foreach($array as &$value) {
+				if(is_numeric($value)) {
+					$value = (int) $value;
+				}
+			} unset($value);
+		}
+
+		return $array;
+	}
+}

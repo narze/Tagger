@@ -22,8 +22,10 @@ class Setting extends CI_Controller {
 		$success = $this->input->get('success');
 		$this->load->model('setting_model');
 		$setting = $this->setting_model->getOne(array('app_install_id' => (string) $this->app_install_id));
-		if(!$setting || !in_array($this->facebook_uid, $setting['admin_list'])){
-			exit('No permission');
+		if(!$setting) {
+			exit('Setting not found');
+		} else if (!isset($setting['admin_list'][$this->facebook_uid])){
+			exit('Permission Denied');
 		}
 		$this->load->library('form_validation');
 
@@ -46,7 +48,8 @@ class Setting extends CI_Controller {
 		$this->load->vars(array(
 			'success' => $success,
 			'app_install_id' => $this->app_install_id,
-			'setting' => $setting
+			'setting' => $setting['data'],
+			'facebook_page_id' => $setting['facebook_page_id']
 		));
 		if ($this->form_validation->run() == FALSE)
 		{
@@ -66,11 +69,14 @@ class Setting extends CI_Controller {
 		       	'tag_4_y' => set_value('tag_4_y'),
 		       	'tag_5_x' => set_value('tag_5_x'),
 		       	'tag_5_y' => set_value('tag_5_y'),
-		       	'background_image_url' => set_value('background_image_url'),
-		       	'facebook_page_id' => set_value('facebook_page_id')
+		       	'background_image_url' => set_value('background_image_url')
 			);
+
 			$data = array(
-				'$set' => $form_data
+				'$set' => array(
+					'data' => $form_data,
+					'facebook_page_id' => set_value('facebook_page_id')
+				)
 			);
 		
 			if ($this->setting_model->update(array('app_install_id' => $this->app_install_id), $data) == TRUE)
