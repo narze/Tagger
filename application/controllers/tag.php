@@ -54,6 +54,7 @@ class Tag extends CI_Controller {
 		if(!$setting) {
 			redirect($this->app_install_id);
 		}
+		$setting_data = $setting['data'];
 		$tagged_facebook_uids = explode(',',$this->input->post('tagged'));
 		if(count($tagged_facebook_uids) < 5){
 			echo anchor('tag/'.$this->app_install_id, 'back');
@@ -66,20 +67,26 @@ class Tag extends CI_Controller {
 		}
 
 		//2. get template image and x,y for each image
-		$background_image_size = getimagesize($setting['background_image_url']);
+		$background_image_size = getimagesize($setting_data['background_image_url']);
 		$background_image_width = $background_image_size[0];
 		$background_image_height = $background_image_size[1];
-		$background_image = imagecreatefrompng($setting['background_image_url']);
-		$tag_x[0] = $setting['tag_1_x'];
-		$tag_y[0] = $setting['tag_1_y'];
-		$tag_x[1] = $setting['tag_2_x'];
-		$tag_y[1] = $setting['tag_2_y'];
-		$tag_x[2] = $setting['tag_3_x'];
-		$tag_y[2] = $setting['tag_3_y'];
-		$tag_x[3] = $setting['tag_4_x'];
-		$tag_y[3] = $setting['tag_4_y'];
-		$tag_x[4] = $setting['tag_5_x'];
-		$tag_y[4] = $setting['tag_5_y'];
+		if(strrpos($setting_data['background_image_url'], '.png') !== FALSE) {
+			$background_image = imagecreatefrompng($setting_data['background_image_url']);
+		} else if(strrpos($setting_data['background_image_url'], '.jpg') !== FALSE) {
+			$background_image = imagecreatefromjpeg($setting_data['background_image_url']);
+		} else if(strrpos($setting_data['background_image_url'], '.gif') !== FALSE) {
+			$background_image = imagecreatefromgif($setting_data['background_image_url']);
+		}
+		$tag_x[0] = $setting_data['tag_1_x'];
+		$tag_y[0] = $setting_data['tag_1_y'];
+		$tag_x[1] = $setting_data['tag_2_x'];
+		$tag_y[1] = $setting_data['tag_2_y'];
+		$tag_x[2] = $setting_data['tag_3_x'];
+		$tag_y[2] = $setting_data['tag_3_y'];
+		$tag_x[3] = $setting_data['tag_4_x'];
+		$tag_y[3] = $setting_data['tag_4_y'];
+		$tag_x[4] = $setting_data['tag_5_x'];
+		$tag_y[4] = $setting_data['tag_5_y'];
 
 		//3. create a new image
 		// header ('Content-Type: image/png'); //for test
@@ -125,8 +132,9 @@ class Tag extends CI_Controller {
 		if(!$setting) {
 			redirect($this->app_install_id);
 		}
+		$setting_data = $setting['data'];
 		//4. upload to facebook, if album not exists, create it
-		$photo_message = $setting['photo_message'];
+		$photo_message = $setting_data['photo_message'];
 		
 		//upload image
 		$this->facebook->setFileUploadSupport(true);
@@ -142,16 +150,16 @@ class Tag extends CI_Controller {
 		$image_size = @getimagesize($filepath);
 		$image_width = $image_size[0];
 		$image_height = $image_size[1];
-		$tag_x[0] = $setting['tag_1_x'];
-		$tag_y[0] = $setting['tag_1_y'];
-		$tag_x[1] = $setting['tag_2_x'];
-		$tag_y[1] = $setting['tag_2_y'];
-		$tag_x[2] = $setting['tag_3_x'];
-		$tag_y[2] = $setting['tag_3_y'];
-		$tag_x[3] = $setting['tag_4_x'];
-		$tag_y[3] = $setting['tag_4_y'];
-		$tag_x[4] = $setting['tag_5_x'];
-		$tag_y[4] = $setting['tag_5_y'];
+		$tag_x[0] = $setting_data['tag_1_x'];
+		$tag_y[0] = $setting_data['tag_1_y'];
+		$tag_x[1] = $setting_data['tag_2_x'];
+		$tag_y[1] = $setting_data['tag_2_y'];
+		$tag_x[2] = $setting_data['tag_3_x'];
+		$tag_y[2] = $setting_data['tag_3_y'];
+		$tag_x[3] = $setting_data['tag_4_x'];
+		$tag_y[3] = $setting_data['tag_4_y'];
+		$tag_x[4] = $setting_data['tag_5_x'];
+		$tag_y[4] = $setting_data['tag_5_y'];
 		//assigning users to tag and cordinates
 		foreach($tagged_facebook_uids as $key => $value){
 			$argstag = array(
