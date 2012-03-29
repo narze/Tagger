@@ -57,7 +57,9 @@ class Tag extends CI_Controller {
 		$user = $this->user;
 		if(isset($user['tag_image'])){
 			$image_path = FCPATH.'uploads/'.$user['tag_image'].'.png';
-			unlink($image_path);
+			if(is_writable($image_path)) {
+				unlink($image_path);
+			}
 		}
 
 		$this->load->model('setting_model');
@@ -184,7 +186,7 @@ class Tag extends CI_Controller {
 				'x' => ($tag_x[$key]+25)*100/$image_width,
 				'y' => ($tag_y[$key]+25)*100/$image_height
 			);
-			$datatag = $this->facebook->api('/' . $data['id'] . '/tags', 'post', $argstag);
+			// $datatag = $this->facebook->api('/' . $data['id'] . '/tags', 'post', $argstag);
 			// if($datatag){ echo 'tagged '. $value; }
 		}
 
@@ -192,7 +194,9 @@ class Tag extends CI_Controller {
 		// echo '<a href="'.$photo['link'].'">Success! Check your facebook wall now</a>';
 
 		//6. remove temp file
-		$remove = unlink($filepath);
+		if(is_writable($filepath)) {
+			unlink($filepath);
+		}
 
 		//7.Update user data
 		$this->load->model('user_model');
