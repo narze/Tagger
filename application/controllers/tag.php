@@ -38,16 +38,12 @@ class Tag extends CI_Controller {
 		}
 		
 		$this->load->library('form_validation');
-		if(isset($this->user['tagged']) && $this->user['tagged']){
-			redirect('home/'.$this->app_install_id);
-		} else {
-
-			$this->load->vars(array(
-				'facebook_uid' => $this->facebook_uid,
-				'fb_root' => $this->fb->getFbRoot()
-			));
-			$this->load->view('tag');
-		}
+		$this->load->vars(array(
+			'facebook_uid' => $this->facebook_uid,
+			'fb_root' => $this->fb->getFbRoot()
+		));
+		$this->load->view('tag');
+	
 	}
 
 	function execute(){
@@ -127,8 +123,9 @@ class Tag extends CI_Controller {
 			), array(
 				'$set' => array(
 					'tag_image' => $filename,
-					'tagged_list' => $tagged_facebook_uids
-				)
+					'recent_tagged_list' => $tagged_facebook_uids,
+				),
+				'$addToSet' => array('tagged_list' => array('$each' => $tagged_facebook_uids))
 			)
 		);
 		$this->load->vars(array(
@@ -144,7 +141,7 @@ class Tag extends CI_Controller {
 			echo json_encode(array('success' => FALSE, 'error' => 'Image not found'));
 			return;
 		}
-		$tagged_facebook_uids = $user['tagged_list'];
+		$tagged_facebook_uids = $user['recent_tagged_list'];
 		$filepath = FCPATH.'uploads/'.$user['tag_image'].'.png';
 		$this->load->model('setting_model');
 		$setting = $this->setting_model->getOne(array('app_install_id' => $this->app_install_id));
@@ -187,7 +184,6 @@ class Tag extends CI_Controller {
 				'y' => ($tag_y[$key]+25)*100/$image_height
 			);
 			// $datatag = $this->facebook->api('/' . $data['id'] . '/tags', 'post', $argstag);
-			// if($datatag){ echo 'tagged '. $value; }
 		}
 
 		$photo = $this->facebook->api($data['id']); 

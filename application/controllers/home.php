@@ -48,15 +48,14 @@ class Home extends CI_Controller {
 			if($user = $this->user_model->getOne(array(
 				'facebook_uid' => $facebook_uid,
 				'app_install_id' => $this->app_install_id))){
-				if(isset($user['tagged']) && $user['tagged']){
-					// echo 'You have tagged people, please wait for the end of this campaign';
-					// echo '<pre>';
-					// var_dump($user['tagged_list']);
-					// echo '</pre>';
-					$this->load->view('home_already_tagged');
-				} else {
-					redirect('tag/'.$this->app_install_id);
+				
+				echo '<p>Now you have '. count($user['tagged_list']).' Points</p>';
+				echo '<p>People you have tagged :</p>';
+				foreach($user['tagged_list'] as $tagged_facebook_id) {
+					echo '<img src="https://graph.facebook.com/'.$tagged_facebook_id.'/picture" />';
 				}
+				echo '<br />'.anchor('tag/'.$this->app_install_id,'Tag again');
+				
 			} else {
 				redirect('register/'.$this->app_install_id);
 			}
