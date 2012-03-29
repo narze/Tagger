@@ -61,8 +61,10 @@ class Sh extends CI_Controller {
 					exit('No facebook session, please connect facebook.');
 				}
 				if($this->setting_model->getOne(array('app_install_id' => $app_install_id))){
+					echo 'mockuphappen restrict user to install again, please remove this app setting first';
 					log_message('error', 'mockuphappen restrict user to install again, please remove this app setting first');
 				} else if(($exist_setting = $this->setting_model->get(array('facebook_page_id' => $facebook_page_id))) && !empty($exist_setting['app_install_id'])){
+					echo 'mockuphappen restrict user to install again, please remove this app setting first';
 					log_message('error', 'mockuphappen restrict user to install again, please remove this app setting first');
 				} else {
 					$request_install_app_result = array(

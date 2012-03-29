@@ -46,6 +46,15 @@ echo form_open('setting/'.$app_install_id, $attributes); ?>
 </p>
 
 <p>
+        <label for="landing_image_url">Landing Image Url</label>
+        <?php echo form_error('landing_image_url'); ?>
+        <br /><input id="landing_image_url" type="text" name="landing_image_url"  value="<?php echo set_value('landing_image_url', isset($setting['landing_image_url']) ? ($setting['landing_image_url']) : ''); ?>"  />
+        <?php if(isset($setting['landing_image_url'])) : ?>
+                <img src="<?php echo $setting['landing_image_url'];?>" />
+        <?php endif; ?>
+</p>
+
+<p>
         <label for="background_image_url">Background Image Url</label>
         <?php echo form_error('background_image_url'); ?>
         <br /><input id="background_image_url" type="text" name="background_image_url"  value="<?php echo set_value('background_image_url', isset($setting['background_image_url']) ? ($setting['background_image_url']) : ''); ?>"  />
@@ -61,9 +70,15 @@ echo form_open('setting/'.$app_install_id, $attributes); ?>
 </p>
 
 <p>
+        <label for="start">Start time*</label>
+        <?php echo form_error('start'); ?>
+        <br /><input id="start" type="text" name="start"  value="<?php echo set_value('start', isset($setting['start']) ? ($setting['start']) : ''); ?>"  />
+</p>
+
+<p>
         <label for="end">End time*</label>
         <?php echo form_error('end'); ?>
-        <br /><input id="end" type="text" name="end"  value="<?php echo set_value('end', isset($end) ? ($end) : ''); ?>"  />
+        <br /><input id="end" type="text" name="end"  value="<?php echo set_value('end', isset($setting['end']) ? ($setting['end']) : ''); ?>"  />
 </p>
 
 

@@ -14,7 +14,7 @@ $config['mongodb_database'] = 'tagger';
 //Facebook : Fill these if you want to use facebook library
 $config['facebook_app_id'] = '308560122540425';
 $config['facebook_app_secret'] = '79b341447ab76a3dd31607b74dcd2972';
-$config['facebook_app_scope'] = 'user_about_me,user_photos,publish_stream,user_likes';
+$config['facebook_app_scope'] = 'user_about_me,user_photos,publish_stream,user_likes,email';
 
 //MockupHappen : Use only if you want to use app without socialhappen api calls
 //This will mockup all api request and return values corresponding to api names

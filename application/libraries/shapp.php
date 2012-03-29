@@ -38,6 +38,8 @@ class SHApp {
 				'data' => array(
 					"background_image_url" => '',
 					"landing_image_url" => '',
+					'start' => '',
+					'end' => '',
 					"photo_message" => "Photo message",
 					"tag_1_x" => "0",
 					"tag_1_y" => "0",
