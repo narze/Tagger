@@ -1,5 +1,15 @@
-<?php // Change the css classes to suit your needs    
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
+<script>
+        $(function(){
+                $('#start,#end').datepicker({"dateFormat": "yy-mm-dd 00:00:00"});
+        });
+</script>
+<link rel="stylesheet" type="text/css"  href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/themes/smoothness/jquery-ui.css" />
 
+<?php // Change the css classes to suit your needs    
+echo '<p>'.anchor('setting/report_list/'.$app_install_id,'Report list (link)').'</p>';
+echo '<p>'.anchor('setting/report_csv/'.$app_install_id,'Report list (CSV)').'</p>';
 $attributes = array('class' => '', 'id' => '');
 echo form_open('setting/'.$app_install_id, $attributes); ?>
 
@@ -67,6 +77,12 @@ echo form_open('setting/'.$app_install_id, $attributes); ?>
         <label for="facebook_page_id">Facebook page id*</label>
         <?php echo form_error('facebook_page_id'); ?>
         <br /><input id="facebook_page_id" type="text" name="facebook_page_id"  value="<?php echo set_value('facebook_page_id', isset($facebook_page_id) ? ($facebook_page_id) : ''); ?>"  />
+</p>
+
+<p>
+        <label for="thumbnail_size">Thumbnail size (original is 50)*</label>
+        <?php echo form_error('thumbnail_size'); ?>
+        <br /><input id="thumbnail_size" type="text" name="thumbnail_size"  value="<?php echo set_value('thumbnail_size', isset($setting['thumbnail_size']) ? ($setting['thumbnail_size']) : ''); ?>"  />
 </p>
 
 <p>

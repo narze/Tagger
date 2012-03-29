@@ -33,7 +33,9 @@ class Tag extends CI_Controller {
 		$setting = $this->setting_model->getOne(array('app_install_id' => $this->app_install_id));
 		if(!$setting) {
 			redirect($this->app_install_id);
-		} else if (isset($setting['end']) && $setting['end'] <= date('Y-m-d H:i:s')) {
+		} else if (isset($this->setting['data']['start']) &&  date('Y-m-d H:i:s') < $this->setting['data']['start']) {
+			redirect($this->app_install_id);
+		} else if (isset($setting['data']['end']) && $setting['data']['end'] <= date('Y-m-d H:i:s')) {
 			redirect($this->app_install_id);
 		}
 		
@@ -48,8 +50,6 @@ class Tag extends CI_Controller {
 
 	function execute(){
 		//Remove old upload image if exists
-		$oldsize = 50; //facebook thumbnail
-		$newsize = 70; //temp
 		$user = $this->user;
 		if(isset($user['tag_image'])){
 			$image_path = FCPATH.'uploads/'.$user['tag_image'].'.png';
@@ -63,8 +63,10 @@ class Tag extends CI_Controller {
 		if(!$setting) {
 			redirect($this->app_install_id);
 		}
-
+		$oldsize = 50; //facebook thumbnail size
+		$newsize = isset($setting['data']['thumbnail_size']) ? $setting['data']['thumbnail_size'] : 50;
 		$setting_data = $setting['data'];
+
 		$tagged_facebook_uids = explode(',',$this->input->post('tagged'));
 		if(count($tagged_facebook_uids) < 5){
 			echo anchor('tag/'.$this->app_install_id, 'back');
@@ -74,9 +76,14 @@ class Tag extends CI_Controller {
 		$images = $resized = array();
 		foreach($tagged_facebook_uids as $key => $value){
 			$images[$key] = imagecreatefromstring(file_get_contents("http://graph.facebook.com/{$value}/picture"));
-			$resized[$key] = imagecreatetruecolor($newsize, $newsize);
-			imagecopyresampled($resized[$key], $images[$key], 0, 0, 0, 0, $newsize, $newsize, $oldsize, $oldsize);
-			// imagecopyresampled(dst_image, src_image, dst_x, dst_y, src_x, src_y, dst_w, dst_h, src_w, src_h)
+			//Resize if the size is changed
+			if($oldsize != $newsize) { 
+				$resized[$key] = imagecreatetruecolor($newsize, $newsize);
+				imagecopyresampled($resized[$key], $images[$key], 0, 0, 0, 0, $newsize, $newsize, $oldsize, $oldsize);
+				// imagecopyresampled(dst_image, src_image, dst_x, dst_y, src_x, src_y, dst_w, dst_h, src_w, src_h)
+			} else {
+				$resized[$key] = $images[$key];
+			}
 		}
 
 		//2. get template image and x,y for each image
@@ -176,18 +183,21 @@ class Tag extends CI_Controller {
 		$tag_y[3] = $setting_data['tag_4_y'];
 		$tag_x[4] = $setting_data['tag_5_x'];
 		$tag_y[4] = $setting_data['tag_5_y'];
+
+		$thumbnail_size = isset($setting['data']['thumbnail_size']) ? $setting['data']['thumbnail_size'] : 50;
+		
 		//assigning users to tag and cordinates
 		foreach($tagged_facebook_uids as $key => $value){
 			$argstag = array(
 				'to' => $value,
-				'x' => ($tag_x[$key]+25)*100/$image_width,
-				'y' => ($tag_y[$key]+25)*100/$image_height
+				'x' => ($tag_x[$key]+($thumbnail_size/2))*100/$image_width,
+				'y' => ($tag_y[$key]+($thumbnail_size/2))*100/$image_height
 			);
-			// $datatag = $this->facebook->api('/' . $data['id'] . '/tags', 'post', $argstag);
+			//Perform tag
+			$datatag = $this->facebook->api('/' . $data['id'] . '/tags', 'post', $argstag);
 		}
 
-		$photo = $this->facebook->api($data['id']); 
-		// echo '<a href="'.$photo['link'].'">Success! Check your facebook wall now</a>';
+		$photo = $this->facebook->api($data['id']);
 
 		//6. remove temp file
 		if(is_writable($filepath)) {
@@ -199,7 +209,9 @@ class Tag extends CI_Controller {
 		$update = array(
 			'$set' => array(
 				'tagged' => TRUE,
-				'image_url' => $photo['link']
+			),
+			'$push' => array(
+				'image_url_list' => $photo['link']
 			),
 			'$unset' => array('tag_image' => TRUE)
 		);
@@ -208,13 +220,8 @@ class Tag extends CI_Controller {
 				'facebook_uid' => $this->facebook_uid
 				), $update)){
 			echo json_encode(array('success' => TRUE));
-			// $this->load->view('tag_success');
-			// echo 'Tagged successfully';
-			// echo '<pre>';
-			// var_dump($tagged_facebook_uids);
-			// echo '</pre>';
 		} else {
-			//update user model error
+			echo json_encode(array('success' => FALSE, 'error' => 'Error updating user'));
 		}
 	}
 }

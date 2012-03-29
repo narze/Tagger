@@ -6,7 +6,7 @@
     <body>
       <div style="background-image:url(<?php echo base_url('assets/images/fashion/1_non-fan.png'); ?>);height:685px;position:relative;">
       	<a class="button-detail-home" target="_top" href="http://www.fashionisland.co.th/activities/detail/250"></a>
-        <a class="button-register" onclick="alert('หมดเขตการลงทะเบียนแล้ว');"></a>
+        <a class="button-register" onclick="alert('ขณะนี้ยังไม่เปิดให้ลงทะเบียน');"></a>
       </div>
     </body>
 </html>

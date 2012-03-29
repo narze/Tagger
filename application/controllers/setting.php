@@ -45,6 +45,7 @@ class Setting extends CI_Controller {
 		$this->form_validation->set_rules('facebook_page_id', 'Facebook Page ID', '');
 		$this->form_validation->set_rules('start', 'Start time', '');
 		$this->form_validation->set_rules('end', 'End time', '');
+		$this->form_validation->set_rules('thumbnail_size', 'Thumbnail size', '');
 			
 		$this->form_validation->set_error_delimiters('<br /><span class="error">', '</span>');
 	
@@ -76,6 +77,7 @@ class Setting extends CI_Controller {
 		       	'landing_image_url' => set_value('landing_image_url'),
 		       	'start' => set_value('start'),
 		       	'end' => set_value('end'),
+		       	'thumbnail_size' => set_value('thumbnail_size'),
 			);
 
 			$data = array(
@@ -96,6 +98,21 @@ class Setting extends CI_Controller {
 		}
 	}
 
+	function report_csv() {
+		$this->load->model('setting_model');
+		$setting = $this->setting_model->getOne(array('app_install_id' => (string) $this->app_install_id));
+		if(!$setting) {
+			exit('Setting not found');
+		} else if (!isset($setting['admin_list'][$this->facebook_uid])){
+			exit('Permission Denied');
+		}
+		$this->load->model('user_model');
+		$users = $this->user_model->get(array('app_install_id' => (string) $this->app_install_id));
+
+		$this->load->vars('users', $users);
+		$this->load->view('report_csv');
+	}
+
 	function report_list() {
 		$this->load->model('setting_model');
 		$setting = $this->setting_model->getOne(array('app_install_id' => (string) $this->app_install_id));
@@ -107,9 +124,6 @@ class Setting extends CI_Controller {
 		$this->load->model('user_model');
 		$users = $this->user_model->get(array('app_install_id' => (string) $this->app_install_id));
 
-		// echo '<pre>';
-		// var_dump($users);
-		// echo '</pre>';
 		$this->load->vars('users', $users);
 		$this->load->view('report_list');
 	}

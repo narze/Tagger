@@ -48,13 +48,14 @@ class Register extends CI_Controller {
 		       		'first_name' => set_value('first_name'),
 			       	'last_name' => set_value('last_name'),
 			       	'email' => set_value('email')
-			    )
+			    	),
+			    	'tagged' => FALSE
 			);
 		
 			$this->load->model('user_model');
 			$result = $this->user_model->add($form_data);
 			if ($result['ok']) {
-				redirect('home/'.$this->app_install_id);  
+				redirect('tag/'.$this->app_install_id);  
 			} else {
 				echo 'An error occurred saving your information. Please try again later';
 			}

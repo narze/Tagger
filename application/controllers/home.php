@@ -35,7 +35,9 @@ class Home extends CI_Controller {
 
 	function index(){
 		date_default_timezone_set('UTC');
- 		if (isset($this->setting['end']) && $this->setting['end'] <= date('Y-m-d H:i:s')) {
+ 		if(isset($this->setting['data']['start']) &&  date('Y-m-d H:i:s') < $this->setting['data']['start']) {
+			$this->load->view('not_started');
+		} else if (isset($this->setting['data']['end']) && $this->setting['data']['end'] <= date('Y-m-d H:i:s')) {
 			$this->load->view('timeout');
 		} else if(!$facebook_uid = $this->facebook->getUser()){
 			$this->load->vars(array(
@@ -48,14 +50,21 @@ class Home extends CI_Controller {
 			if($user = $this->user_model->getOne(array(
 				'facebook_uid' => $facebook_uid,
 				'app_install_id' => $this->app_install_id))){
-				
-				echo '<p>Now you have '. count($user['tagged_list']).' Points</p>';
-				echo '<p>People you have tagged :</p>';
-				foreach($user['tagged_list'] as $tagged_facebook_id) {
-					echo '<img src="https://graph.facebook.com/'.$tagged_facebook_id.'/picture" />';
+				if($user['tagged']){
+					echo '<p>1. Now you have tagged '. count($user['image_url_list']).' times</p>';
+					echo '<p>2. and you have tagged '. count($user['tagged_list']).' people</p>';
+					echo '<p>3. People you have tagged last time :</p>';
+					foreach($user['recent_tagged_list'] as $tagged_facebook_id) {
+						echo '<img src="https://graph.facebook.com/'.$tagged_facebook_id.'/picture" />';
+					}
+					echo '<p>4. All people you have tagged so far :</p>';
+					foreach($user['tagged_list'] as $tagged_facebook_id) {
+						echo '<img src="https://graph.facebook.com/'.$tagged_facebook_id.'/picture" />';
+					}
+					echo '<p>'.anchor('tag/'.$this->app_install_id,'Tag again').'</p>';
+				} else {
+					redirect('tag/'.$this->app_install_id);
 				}
-				echo '<br />'.anchor('tag/'.$this->app_install_id,'Tag again');
-				
 			} else {
 				redirect('register/'.$this->app_install_id);
 			}
