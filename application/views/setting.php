@@ -60,6 +60,12 @@ echo form_open('setting/'.$app_install_id, $attributes); ?>
         <br /><input id="facebook_page_id" type="text" name="facebook_page_id"  value="<?php echo set_value('facebook_page_id', isset($facebook_page_id) ? ($facebook_page_id) : ''); ?>"  />
 </p>
 
+<p>
+        <label for="end">End time*</label>
+        <?php echo form_error('end'); ?>
+        <br /><input id="end" type="text" name="end"  value="<?php echo set_value('end', isset($end) ? ($end) : ''); ?>"  />
+</p>
+
 
 <p>
         <?php echo form_submit( 'submit', 'Submit'); ?>

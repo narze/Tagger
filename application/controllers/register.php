@@ -21,6 +21,8 @@ class Register extends CI_Controller {
 				'app_install_id' => $this->app_install_id,
 				'facebook_uid' => $facebook_uid))){
 			redirect('home/'.$this->app_install_id);
+		} else {
+			$facebook_user = $this->facebook->api('me');
 		}
 		$this->load->library('form_validation');
 		$this->load->helper('url');
@@ -29,10 +31,11 @@ class Register extends CI_Controller {
 		$this->form_validation->set_rules('last_name', 'Last name', 'required|trim|xss_clean|max_length[50]');			
 		$this->form_validation->set_rules('email', 'Email', 'required|trim|xss_clean|valid_email|max_length[255]');			
 			
-		$this->form_validation->set_error_delimiters('<br /><span class="error">', '</span>');
+		$this->form_validation->set_error_delimiters('<span class="help-inline">', '</span>');
 		$this->load->vars(array(
 			'facebook_uid' => $facebook_uid,
-			'app_install_id' => $this->app_install_id
+			'app_install_id' => $this->app_install_id,
+			'facebook_user' => $facebook_user
 		));
 
 		if ($this->form_validation->run() == FALSE)	{

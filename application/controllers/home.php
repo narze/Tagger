@@ -26,7 +26,7 @@ class Home extends CI_Controller {
 				exit('App not installed yet');
 			}
 		} else {
-			if(!$setting = $this->setting_model->getOne(array('app_install_id' => $this->app_install_id))){
+			if(!$this->setting = $this->setting_model->getOne(array('app_install_id' => $this->app_install_id))){
 				exit('App not installed yet');
 			}
 			$this->load->vars('app_install_id', $this->app_install_id);
@@ -34,8 +34,14 @@ class Home extends CI_Controller {
 	}
 
 	function index(){
-		if(!$facebook_uid = $this->facebook->getUser()){
-			$this->load->vars('fb_root', $this->fb->getFbRoot());
+		date_default_timezone_set('UTC');
+ 		if (isset($this->setting['end']) && $this->setting['end'] <= date('Y-m-d H:i:s')) {
+			$this->load->view('timeout');
+		} else if(!$facebook_uid = $this->facebook->getUser()){
+			$this->load->vars(array(
+				'fb_root' => $this->fb->getFbRoot(),
+				'landing_image_url' => $this->setting['landing_image_url']
+			));
 			$this->load->view('home');
 		} else {
 			$this->load->model('user_model');
@@ -43,10 +49,11 @@ class Home extends CI_Controller {
 				'facebook_uid' => $facebook_uid,
 				'app_install_id' => $this->app_install_id))){
 				if(isset($user['tagged']) && $user['tagged']){
-					echo 'You have tagged people, please wait for the end of this campaign';
-					echo '<pre>';
-					var_dump($user['tagged_list']);
-					echo '</pre>';
+					// echo 'You have tagged people, please wait for the end of this campaign';
+					// echo '<pre>';
+					// var_dump($user['tagged_list']);
+					// echo '</pre>';
+					$this->load->view('home_already_tagged');
 				} else {
 					redirect('tag/'.$this->app_install_id);
 				}

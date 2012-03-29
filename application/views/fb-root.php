@@ -15,7 +15,7 @@
 		  	window.fblogin = function () {
 				FB.login(function(response) {
 					if (response.status === 'connected') {
-						window.location = window.location.href;
+						window.location = '<?php echo base_url();?>';
 					}
 				}, {scope:'<?php echo $facebook_app_scope;?>'});
 			};

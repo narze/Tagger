@@ -35,7 +35,21 @@ class SHApp {
 				'admin_list' => array(
 					((string) $data['user_facebook_id']) => array() //preserve empty array for user specific data
 				),
-				'data' => array() //preserve for app's data
+				'data' => array(
+					"background_image_url" => '',
+					"landing_image_url" => '',
+					"photo_message" => "Photo message",
+					"tag_1_x" => "0",
+					"tag_1_y" => "0",
+					"tag_2_x" => "0",
+					"tag_2_y" => "0",
+					"tag_3_x" => "0",
+					"tag_3_y" => "0",
+					"tag_4_x" => "0",
+					"tag_4_y" => "0",
+					"tag_5_x" => "0",
+					"tag_5_y" => "0",
+				)
 			);
 
 			if($this->CI->setting_model->getOne(array('app_install_id' => $app_install_id))){

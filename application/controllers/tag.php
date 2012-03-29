@@ -28,9 +28,18 @@ class Tag extends CI_Controller {
 	}
 
 	function index(){
+		date_default_timezone_set('UTC');
+		$this->load->model('setting_model');
+		$setting = $this->setting_model->getOne(array('app_install_id' => $this->app_install_id));
+		if(!$setting) {
+			redirect($this->app_install_id);
+		} else if (isset($setting['end']) && $setting['end'] <= date('Y-m-d H:i:s')) {
+			redirect($this->app_install_id);
+		}
+		
 		$this->load->library('form_validation');
-		if(isset($this->user['tagged']) && count($this->user['tagged'])){
-			echo 'You cannot tag anymore, please wait until the end of this campaign';
+		if(isset($this->user['tagged']) && $this->user['tagged']){
+			redirect('home/'.$this->app_install_id);
 		} else {
 
 			$this->load->vars(array(
@@ -43,6 +52,8 @@ class Tag extends CI_Controller {
 
 	function execute(){
 		//Remove old upload image if exists
+		$oldsize = 50; //facebook thumbnail
+		$newsize = 70; //temp
 		$user = $this->user;
 		if(isset($user['tag_image'])){
 			$image_path = FCPATH.'uploads/'.$user['tag_image'].'.png';
@@ -54,6 +65,7 @@ class Tag extends CI_Controller {
 		if(!$setting) {
 			redirect($this->app_install_id);
 		}
+
 		$setting_data = $setting['data'];
 		$tagged_facebook_uids = explode(',',$this->input->post('tagged'));
 		if(count($tagged_facebook_uids) < 5){
@@ -61,9 +73,12 @@ class Tag extends CI_Controller {
 			exit("Please tag 5 people");
 		}
 		//1. save images into vars
-		$images = array();
+		$images = $resized = array();
 		foreach($tagged_facebook_uids as $key => $value){
 			$images[$key] = imagecreatefromstring(file_get_contents("http://graph.facebook.com/{$value}/picture"));
+			$resized[$key] = imagecreatetruecolor($newsize, $newsize);
+			imagecopyresampled($resized[$key], $images[$key], 0, 0, 0, 0, $newsize, $newsize, $oldsize, $oldsize);
+			// imagecopyresampled(dst_image, src_image, dst_x, dst_y, src_x, src_y, dst_w, dst_h, src_w, src_h)
 		}
 
 		//2. get template image and x,y for each image
@@ -92,12 +107,12 @@ class Tag extends CI_Controller {
 		// header ('Content-Type: image/png'); //for test
 		// $background_image = @imagecreatetruecolor(600, 400); // create new blank image
 		$text_color = imagecolorallocate($background_image, 233, 14, 91);
-		imagestring($background_image, 1, 5, 5,  'U R TAGGED', $text_color);
-		imagecopymerge($background_image, $images[0], $tag_x[0], $tag_y[0], 0, 0, 50, 50, 100);
-		imagecopymerge($background_image, $images[1], $tag_x[1], $tag_y[1], 0, 0, 50, 50, 100);
-		imagecopymerge($background_image, $images[2], $tag_x[2], $tag_y[2], 0, 0, 50, 50, 100);
-		imagecopymerge($background_image, $images[3], $tag_x[3], $tag_y[3], 0, 0, 50, 50, 100);
-		imagecopymerge($background_image, $images[4], $tag_x[4], $tag_y[4], 0, 0, 50, 50, 100);
+		// imagestring($background_image, 1, 5, 5,  'U R TAGGED', $text_color);
+		imagecopymerge($background_image, $resized[0], $tag_x[0], $tag_y[0], 0, 0, $newsize, $newsize, 100);
+		imagecopymerge($background_image, $resized[1], $tag_x[1], $tag_y[1], 0, 0, $newsize, $newsize, 100);
+		imagecopymerge($background_image, $resized[2], $tag_x[2], $tag_y[2], 0, 0, $newsize, $newsize, 100);
+		imagecopymerge($background_image, $resized[3], $tag_x[3], $tag_y[3], 0, 0, $newsize, $newsize, 100);
+		imagecopymerge($background_image, $resized[4], $tag_x[4], $tag_y[4], 0, 0, $newsize, $newsize, 100);
 		// imagecopymerge(dst_im, src_im, dst_x, dst_y, src_x, src_y, src_w, src_h, pct)
 		//set random filename
 		mt_srand();
@@ -117,13 +132,15 @@ class Tag extends CI_Controller {
 		$this->load->vars(array(
 			'filename' => $filename
 		));
-		$this->load->view('tag_execute');
+		// $this->load->view('tag_execute');
+		redirect('tag/uploadToFacebook/'.$this->app_install_id);
 	}
 
 	function uploadToFacebook() {
 		$user = $this->user;
 		if(!isset($user['tag_image'])){
-			exit("Image not found");
+			echo json_encode(array('success' => FALSE, 'error' => 'Image not found'));
+			return;
 		}
 		$tagged_facebook_uids = $user['tagged_list'];
 		$filepath = FCPATH.'uploads/'.$user['tag_image'].'.png';
@@ -168,11 +185,11 @@ class Tag extends CI_Controller {
 				'y' => ($tag_y[$key]+25)*100/$image_height
 			);
 			$datatag = $this->facebook->api('/' . $data['id'] . '/tags', 'post', $argstag);
-			if($datatag){ echo 'tagged '. $value; }
+			// if($datatag){ echo 'tagged '. $value; }
 		}
-		$photo = $this->facebook->api($data['id']);
 
-		echo '<a href="'.$photo['link'].'">Success! Check your facebook wall now</a>';
+		$photo = $this->facebook->api($data['id']); 
+		// echo '<a href="'.$photo['link'].'">Success! Check your facebook wall now</a>';
 
 		//6. remove temp file
 		$remove = unlink($filepath);
@@ -181,7 +198,8 @@ class Tag extends CI_Controller {
 		$this->load->model('user_model');
 		$update = array(
 			'$set' => array(
-				'tagged' => TRUE
+				'tagged' => TRUE,
+				'image_url' => $photo['link']
 			),
 			'$unset' => array('tag_image' => TRUE)
 		);
@@ -189,10 +207,12 @@ class Tag extends CI_Controller {
 				'app_install_id' => $this->app_install_id,
 				'facebook_uid' => $this->facebook_uid
 				), $update)){
-			echo 'Tagged successfully';
-			echo '<pre>';
-			var_dump($tagged_facebook_uids);
-			echo '</pre>';
+			echo json_encode(array('success' => TRUE));
+			// $this->load->view('tag_success');
+			// echo 'Tagged successfully';
+			// echo '<pre>';
+			// var_dump($tagged_facebook_uids);
+			// echo '</pre>';
 		} else {
 			//update user model error
 		}
