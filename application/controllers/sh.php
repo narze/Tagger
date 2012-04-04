@@ -14,7 +14,40 @@ class Sh extends CI_Controller {
 
 	function mockuphappen_install() {
 		if($this->mockuphappen_enabled){
-			echo anchor('sh/install?company_id=1&user_id=1&page_id=1', "Install");
+			$user_id = 1;
+			$company_id = 1;
+			$page_id = 1;
+			$app_install_secret_key = "mockuphappen";
+			$app_install_id = $this->config->item('mockuphappen_app_install_id');
+			$facebook_page_id = $this->config->item('mockuphappen_facebook_page_id');
+			if(!$user_facebook_id = $this->facebook->getUser()) {
+				exit('No facebook session, please <a href="'.base_url().'facebook_connect">connect facebook. </a>');
+			}
+			if($this->setting_model->getOne(array('app_install_id' => $app_install_id))){
+				exit('mockuphappen restrict user to install again, please remove this app setting first');
+			} else if(($exist_setting = $this->setting_model->get(array('facebook_page_id' => $facebook_page_id))) && !empty($exist_setting['app_install_id'])){
+				exit('mockuphappen restrict user to install again, please remove this app setting first');
+			} else {
+				$request_install_app_result = array(
+					'app_install_id' => $this->config->item('mockuphappen_app_install_id'),
+					'app_install_secret_key' => $this->config->item('mockuphappen_app_install_secret_key')
+				);
+			}
+
+			$app_install_secret_key = $this->config->item('mockuphappen_app_install_secret_key');
+
+			$this->load->library('shapp');
+				if(!$result = $this->shapp->setup_app(
+					compact('user_id','user_facebook_id','page_id','facebook_page_id',
+						'company_id','app_install_id','app_install_secret_key'))){
+					exit('Setup app failed : '.print_r($result, TRUE));
+					$return['error'] = 'Setup app failed';
+				} else {
+					$return['status'] = 'OK';
+					$return['app_install_id'] = $app_install_id;
+				}
+
+			echo "Installed successfully ".anchor('sh/config?app_install_id='.$app_install_id.'&user_id='.$user_id.'&app_install_secret_key='.$app_install_secret_key,'Config');
 		} else {
 			redirect();
 		}
@@ -53,42 +86,18 @@ class Sh extends CI_Controller {
 			log_message('error', 'Insufficient parameters');
 			$return['error'] = 'Insufficient parameters';
 		} else {
-			if($this->mockuphappen_enabled){
-				$app_install_id = $this->config->item('mockuphappen_app_install_id');
-				$facebook_page_id = $this->config->item('mockuphappen_facebook_page_id');
-				$user_facebook_id = $this->facebook->getUser();
-				if(!$user_facebook_id) {
-					exit('No facebook session, please connect facebook.');
-				}
-				if($this->setting_model->getOne(array('app_install_id' => $app_install_id))){
-					echo 'mockuphappen restrict user to install again, please remove this app setting first';
-					log_message('error', 'mockuphappen restrict user to install again, please remove this app setting first');
-				} else if(($exist_setting = $this->setting_model->get(array('facebook_page_id' => $facebook_page_id))) && !empty($exist_setting['app_install_id'])){
-					echo 'mockuphappen restrict user to install again, please remove this app setting first';
-					log_message('error', 'mockuphappen restrict user to install again, please remove this app setting first');
-				} else {
-					$request_install_app_result = array(
-						'app_install_id' => $this->config->item('mockuphappen_app_install_id'),
-						'app_install_secret_key' => $this->config->item('mockuphappen_app_install_secret_key')
-					);
-				}
-			} else {
-				$request_install_app_result = $this->socialhappen->request('request_install_app',
-					array(
-						'company_id' => $company_id,
-						'user_id' => $user_id
-					)
-				);
-			}
+			$request_install_app_result = $this->socialhappen->request('request_install_app',
+				array(
+					'company_id' => $company_id,
+					'user_id' => $user_id
+				)
+			);
 			
 			if(!isset($request_install_app_result['app_install_id']) || !isset($request_install_app_result['app_install_secret_key'])){
 				$return['error'] = 'Can not install app';
 			} else {
 				$app_install_id = $request_install_app_result['app_install_id'];
 				$app_install_secret_key = $request_install_app_result['app_install_secret_key'];
-				if($this->mockuphappen_enabled){
-					$app_install_secret_key = $this->config->item('mockuphappen_app_install_secret_key');
-				}
 				$install_page_result = $this->socialhappen->request('request_install_page',
 					array(
 						'app_install_id' => $app_install_id,
@@ -112,9 +121,6 @@ class Sh extends CI_Controller {
 					} else {
 						$return['status'] = 'OK';
 						$return['app_install_id'] = $app_install_id;
-						if($this->mockuphappen_enabled){
-							redirect('sh/config?app_install_id='.$app_install_id.'&user_id='.$user_id.'&app_install_secret_key='.$app_install_secret_key);
-						}
 					}
 
 					//3. Add actions, achievements (config/socialhappen_sctions.php)
