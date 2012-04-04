@@ -50,7 +50,7 @@ class SHApp {
 					"tag_5_x" => "372",
 					"tag_5_y" => "522",
 					"thumbnail_size" => "70",
-					"template_name" => "fashion",
+					"template_name" => "template",
 					"template_images" => array(
 						"main" => "1_non-fan.png",
 						"register" => "2_regis.png",
