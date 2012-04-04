@@ -6,12 +6,14 @@
         });
 </script>
 <link rel="stylesheet" type="text/css"  href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/themes/smoothness/jquery-ui.css" />
-
+<h1>Report</h1>
 <?php // Change the css classes to suit your needs    
 echo '<p>'.anchor('setting/report_list/'.$app_install_id,'Report list (link)').'</p>';
 echo '<p>'.anchor('setting/report_csv/'.$app_install_id,'Report list (CSV)').'</p>';
 $attributes = array('class' => '', 'id' => '');
 echo form_open('setting/'.$app_install_id, $attributes); ?>
+<h1>Setting</h1>
+<p><a href="<?php echo $facebook_add_page_app_url;?>">Add app into facebook page</a></p>
 
 <p>
         <label for="photo_message">Photo Message</label>

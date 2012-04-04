@@ -52,11 +52,16 @@ class Setting extends CI_Controller {
 			
 		$this->form_validation->set_error_delimiters('<br /><span class="error">', '</span>');
 	
+		$form_url = 'setting/'.$this->app_install_id;
+		$facebook_redirect = urlencode(base_url($form_url));
+		$facebook_app_id = $this->config->item('facebook_app_id');
 		$this->load->vars(array(
 			'success' => $success,
 			'app_install_id' => $this->app_install_id,
 			'setting' => $setting['data'],
-			'facebook_page_id' => $setting['facebook_page_id']
+			'facebook_page_id' => $setting['facebook_page_id'],
+			'facebook_add_page_app_url' => "https://www.facebook.com/dialog/pagetab?app_id={$facebook_app_id}
+&display=page&next={$facebook_redirect}"
 		));
 		if ($this->form_validation->run() == FALSE)
 		{
