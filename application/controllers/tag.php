@@ -87,15 +87,19 @@ class Tag extends CI_Controller {
 		}
 
 		//2. get template image and x,y for each image
-		$background_image_size = getimagesize($setting_data['background_image_url']);
+		$background_image_url = base_url(
+			'assets/images/'.$setting_data['template_name'].
+			'/'.$setting_data['template_images']['background']
+		);
+		$background_image_size = getimagesize($background_image_url);
 		$background_image_width = $background_image_size[0];
 		$background_image_height = $background_image_size[1];
-		if(strrpos($setting_data['background_image_url'], '.png') !== FALSE) {
-			$background_image = imagecreatefrompng($setting_data['background_image_url']);
-		} else if(strrpos($setting_data['background_image_url'], '.jpg') !== FALSE) {
-			$background_image = imagecreatefromjpeg($setting_data['background_image_url']);
-		} else if(strrpos($setting_data['background_image_url'], '.gif') !== FALSE) {
-			$background_image = imagecreatefromgif($setting_data['background_image_url']);
+		if(strrpos($background_image_url, '.png') !== FALSE) {
+			$background_image = imagecreatefrompng($background_image_url);
+		} else if(strrpos($background_image_url, '.jpg') !== FALSE) {
+			$background_image = imagecreatefromjpeg($background_image_url);
+		} else if(strrpos($background_image_url, '.gif') !== FALSE) {
+			$background_image = imagecreatefromgif($background_image_url);
 		}
 		$tag_x[0] = $setting_data['tag_1_x'];
 		$tag_y[0] = $setting_data['tag_1_y'];

@@ -36,21 +36,27 @@ class SHApp {
 					((string) $data['user_facebook_id']) => array() //preserve empty array for user specific data
 				),
 				'data' => array(
-					"background_image_url" => '',
-					"landing_image_url" => '',
 					'start' => '',
 					'end' => '',
 					"photo_message" => "Photo message",
-					"tag_1_x" => "0",
-					"tag_1_y" => "0",
-					"tag_2_x" => "0",
-					"tag_2_y" => "0",
-					"tag_3_x" => "0",
-					"tag_3_y" => "0",
-					"tag_4_x" => "0",
-					"tag_4_y" => "0",
-					"tag_5_x" => "0",
-					"tag_5_y" => "0",
+					"tag_1_x" => "153",
+					"tag_1_y" => "387",
+					"tag_2_x" => "298",
+					"tag_2_y" => "387",
+					"tag_3_x" => "80",
+					"tag_3_y" => "522",
+					"tag_4_x" => "225",
+					"tag_4_y" => "522",
+					"tag_5_x" => "372",
+					"tag_5_y" => "522",
+					"thumbnail_size" => "70",
+					"template_name" => "fashion",
+					"template_images" => array(
+						"main" => "1_non-fan.png",
+						"register" => "2_regis.png",
+						"background" => "3_app.png",
+						"success_popup" => "congrat.png"
+					)
 				)
 			);
 

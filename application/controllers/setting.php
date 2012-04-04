@@ -40,8 +40,11 @@ class Setting extends CI_Controller {
 		$this->form_validation->set_rules('tag_4_y', 'Tag 4 (y)', 'required|trim|xss_clean|is_numeric|max_length[4]');			
 		$this->form_validation->set_rules('tag_5_x', 'Tag 5 (x)', 'required|trim|xss_clean|is_numeric|max_length[4]');			
 		$this->form_validation->set_rules('tag_5_y', 'Tag 5 (y)', 'required|trim|xss_clean|is_numeric|max_length[4]');		
-		$this->form_validation->set_rules('background_image_url', 'Background Image Url', '');
-		$this->form_validation->set_rules('landing_image_url', 'Landing Image Url', '');
+		$this->form_validation->set_rules('template_name', 'Template name', 'required|trim|xss_clean');
+		$this->form_validation->set_rules('template_main', 'Template : Background image', 'required|trim|xss_clean');
+		$this->form_validation->set_rules('template_register', 'Template : Main page image', 'required|trim|xss_clean');
+		$this->form_validation->set_rules('template_background', 'Template : Register page image', 'required|trim|xss_clean');
+		$this->form_validation->set_rules('template_success_popup', 'Template : Success popup image', 'required|trim|xss_clean');
 		$this->form_validation->set_rules('facebook_page_id', 'Facebook Page ID', '');
 		$this->form_validation->set_rules('start', 'Start time', '');
 		$this->form_validation->set_rules('end', 'End time', '');
@@ -73,11 +76,17 @@ class Setting extends CI_Controller {
 		       	'tag_4_y' => set_value('tag_4_y'),
 		       	'tag_5_x' => set_value('tag_5_x'),
 		       	'tag_5_y' => set_value('tag_5_y'),
-		       	'background_image_url' => set_value('background_image_url'),
-		       	'landing_image_url' => set_value('landing_image_url'),
 		       	'start' => set_value('start'),
 		       	'end' => set_value('end'),
 		       	'thumbnail_size' => set_value('thumbnail_size'),
+		       	'template_name' => set_value('template_name'),
+		       	'template_images' => array(
+		       		'main' => set_value('template_main'),
+		       		'register' => set_value('template_register'),
+		       		'background' => set_value('template_background'),
+		       		'success_popup' => set_value('template_success_popup'),
+		       	)
+
 			);
 
 			$data = array(

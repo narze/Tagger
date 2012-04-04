@@ -5,7 +5,7 @@
     </head>
     <body>
       <?php echo $fb_root;?>
-      <div style="background-image:url(<?php echo $landing_image_url; ?>);height:685px;position:relative;">
+      <div style="background-image:url(<?php echo $template_images['main']; ?>);height:685px;position:relative;">
       	<a class="button-register" onclick="fblogin();"></a>
       </div>
     </body>

@@ -35,14 +35,19 @@ class Home extends CI_Controller {
 
 	function index(){
 		date_default_timezone_set('UTC');
+		$this->load->vars(
+			'template_name' => $this->setting['template_name'],
+			'template_images' => $this->setting['template_images']
+		);
  		if(isset($this->setting['data']['start']) &&  date('Y-m-d H:i:s') < $this->setting['data']['start']) {
-			$this->load->view('not_started');
+ 			$this->load->vars('timeout_message', 'ขณะนี้ยังไม่เปิดให้ลงทะเบียน');
+			$this->load->view('timeout');
 		} else if (isset($this->setting['data']['end']) && $this->setting['data']['end'] <= date('Y-m-d H:i:s')) {
+			$this->load->vars('timeout_message', 'หมดเขตการลงทะเบียนแล้ว');
 			$this->load->view('timeout');
 		} else if(!$facebook_uid = $this->facebook->getUser()){
 			$this->load->vars(array(
-				'fb_root' => $this->fb->getFbRoot(),
-				'landing_image_url' => $this->setting['landing_image_url']
+				'fb_root' => $this->fb->getFbRoot()
 			));
 			$this->load->view('home');
 		} else {

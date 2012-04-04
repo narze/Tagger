@@ -10,6 +10,9 @@ class Register extends CI_Controller {
 			echo json_encode("false");
 			exit();
 		} else {
+			if(!$this->setting = $this->setting_model->getOne(array('app_install_id' => $this->app_install_id))){
+				exit('App not installed yet');
+			}
 			$this->load->vars('app_install_id', $this->app_install_id);
 		}
 		$this->load->library('fb');
@@ -35,7 +38,9 @@ class Register extends CI_Controller {
 		$this->load->vars(array(
 			'facebook_uid' => $facebook_uid,
 			'app_install_id' => $this->app_install_id,
-			'facebook_user' => $facebook_user
+			'facebook_user' => $facebook_user,
+			'template_name' => $this->setting['template_name'],
+			'template_images' => $this->setting['template_images']
 		));
 
 		if ($this->form_validation->run() == FALSE)	{

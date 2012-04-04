@@ -56,20 +56,61 @@ echo form_open('setting/'.$app_install_id, $attributes); ?>
 </p>
 
 <p>
-        <label for="landing_image_url">Landing Image Url</label>
-        <?php echo form_error('landing_image_url'); ?>
-        <br /><input id="landing_image_url" type="text" name="landing_image_url"  value="<?php echo set_value('landing_image_url', isset($setting['landing_image_url']) ? ($setting['landing_image_url']) : ''); ?>"  />
-        <?php if(isset($setting['landing_image_url'])) : ?>
-                <img src="<?php echo $setting['landing_image_url'];?>" />
+        <label for="template_name">Template name</label>
+        <?php echo form_error('template_name'); ?>
+        <br /><input id="template_name" type="text" name="template_name"
+         value="<?php echo set_value('template_name', isset($setting['template_name']) ? ($setting['template_name']) : ''); ?>"  />
+</p>
+
+<p>
+        <label for="template_background">Template : Background image</label>
+        <?php echo form_error('template_background'); ?>
+        <br /><input id="template_background" type="text" name="template_background"
+         value="<?php echo set_value('template_background', isset($setting['template_images']['background']) ? ($setting['template_images']['background']) : ''); ?>"  />
+        <?php if(isset($setting['template_images']['background']) && isset($setting['template_name'])) : ?>
+                <img src="<?php echo base_url(
+                        'assets/images/'.$setting['template_name'].
+                        '/'.$setting['template_images']['background']
+                );?>" />
         <?php endif; ?>
 </p>
 
 <p>
-        <label for="background_image_url">Background Image Url</label>
-        <?php echo form_error('background_image_url'); ?>
-        <br /><input id="background_image_url" type="text" name="background_image_url"  value="<?php echo set_value('background_image_url', isset($setting['background_image_url']) ? ($setting['background_image_url']) : ''); ?>"  />
-        <?php if(isset($setting['background_image_url'])) : ?>
-                <img src="<?php echo $setting['background_image_url'];?>" />
+        <label for="template_main">Template : Main page image</label>
+        <?php echo form_error('template_main'); ?>
+        <br /><input id="template_main" type="text" name="template_main"
+         value="<?php echo set_value('template_main', isset($setting['template_images']['main']) ? ($setting['template_images']['main']) : ''); ?>"  />
+        <?php if(isset($setting['template_images']['main']) && isset($setting['template_name'])) : ?>
+                <img src="<?php echo base_url(
+                        'assets/images/'.$setting['template_name'].
+                        '/'.$setting['template_images']['main']
+                );?>" />
+        <?php endif; ?>
+</p>
+
+<p>
+        <label for="template_register">Template : Register page image</label>
+        <?php echo form_error('template_register'); ?>
+        <br /><input id="template_register" type="text" name="template_register"
+         value="<?php echo set_value('template_register', isset($setting['template_images']['register']) ? ($setting['template_images']['register']) : ''); ?>"  />
+        <?php if(isset($setting['template_images']['register']) && isset($setting['template_name'])) : ?>
+                <img src="<?php echo base_url(
+                        'assets/images/'.$setting['template_name'].
+                        '/'.$setting['template_images']['register']
+                );?>" />
+        <?php endif; ?>
+</p>
+
+<p>
+        <label for="template_success_popup">Template : Success popup image</label>
+        <?php echo form_error('template_success_popup'); ?>
+        <br /><input id="template_success_popup" type="text" name="template_success_popup"
+         value="<?php echo set_value('template_success_popup', isset($setting['template_images']['success_popup']) ? ($setting['template_images']['success_popup']) : ''); ?>"  />
+        <?php if(isset($setting['template_images']['success_popup']) && isset($setting['template_name'])) : ?>
+                <img src="<?php echo base_url(
+                        'assets/images/'.$setting['template_name'].
+                        '/'.$setting['template_images']['success_popup']
+                );?>" />
         <?php endif; ?>
 </p>
 

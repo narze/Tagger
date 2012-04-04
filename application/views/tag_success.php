@@ -1,1 +1,0 @@
-<img src="<?php echo base_url().'assets/images/fashion/5_congrat.png';?>" alt="" />
