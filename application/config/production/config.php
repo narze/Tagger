@@ -39,7 +39,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'https://apps.socialhappen.com/ext/tagger-m150/';
+$config['base_url']	= 'https://apps.socialhappen.com/ext/tagger-production/';
 
 /*
 |--------------------------------------------------------------------------
